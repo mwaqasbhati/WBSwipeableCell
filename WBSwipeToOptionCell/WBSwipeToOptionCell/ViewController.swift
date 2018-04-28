@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
       //  tableView.estimatedRowHeight = 70.0
-        tableView.rowHeight = 90.0
+        tableView.rowHeight = 190.0
         
     }
     @objc func moreBtnPressed(sender: UIButton) {
@@ -44,7 +44,7 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -52,20 +52,36 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else {
             return UITableViewCell()
         }
-        let item1 = WBMenuItem(title: "Delete", icon: "hello") { (item) in
+        let item1 = WBMenuItem(title: "Delete", icon: "delete") { (item) in
             
         }
-        item1.backgroundColor = UIColor.blue
-        let item2 = WBMenuItem(title: "Submit", icon: "hello"){ (item) in
+        item1.itemBorderColor = UIColor.white
+        item1.itemBorderWidth = 2.0
+        item1.itemIconSize = CGSize(width: 70, height: 70)
+        item1.titleColor = UIColor.gray
+        item1.titleFont = UIFont.systemFont(ofSize: 11.0)
+      //  item1.backgroundColor = UIColor.blue
+        let item2 = WBMenuItem(title: "Submit", icon: "save"){ (item) in
             
         }
-        item2.backgroundColor = UIColor.green
-        let item3 = WBMenuItem(title: "Save", icon: "hello"){ (item) in
+        item2.itemBorderColor = UIColor.black
+        item2.itemBorderWidth = 2.0
+      //  item2.backgroundColor = UIColor.green
+        let item3 = WBMenuItem(title: "Save", icon: "submit"){ (item) in
             
         }
-        item3.backgroundColor = UIColor.yellow
+        item3.itemBorderColor = UIColor.black
+        item3.itemBorderWidth = 2.0
+      //  item3.backgroundColor = UIColor.yellow
        // WBMenuView.addOptionsView(tableViewCell: cell, [item1, item2, item3])
-        let menu = WBMenuView(tableViewCell:cell , items: [item1, item2, item3])
+        let menu = WBMenuView(tableViewCell: cell, items: [item1, item2, item3], indexPath: indexPath)
+        menu.delegate = self
+        menu.setupUI()
+        menu.setMenuContentAlignment(.left)
+        menu.setBackgroundColor(UIColor.blue)
+        menu.setMenuItemSpacingVertical(10.0)
+        menu.setMenuItemSpacingHorizontal(15.0)
+        menu.setMenuContentInset(10, left: 10, bottom: 10, right: 10)
         menu.tag = -1
         cell.buttonMore.tag = indexPath.row
         cell.selectionStyle = .none
@@ -73,5 +89,18 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         cell.buttonMore.addTarget(self, action: #selector(moreBtnPressed(sender:)), for: .touchUpInside)
         return cell
     }
+}
+
+extension ViewController: WBMenuViewDelegate {
+//    func MenuView(_ view: WBMenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
+//
+//    }
+//    func MenuView(_ view: WBMenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
+//
+//    }
+//    func MenuView(_ view: WBMenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool {
+//
+//    }
+
 }
 
