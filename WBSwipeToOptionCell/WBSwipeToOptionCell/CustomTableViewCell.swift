@@ -17,7 +17,7 @@ class CustomTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         
-        if let optionView = self.viewWithTag(-1) as? WBMenuView {
+        if let optionView = self.viewWithTag(-1) as? MenuView {
             if optionView.isMenuOpen {
                 optionView.close()
             }

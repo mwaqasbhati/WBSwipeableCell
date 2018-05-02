@@ -9,86 +9,75 @@
 import Foundation
 import UIKit
 
-typealias actionHandler = (WBMenuItem)->()
+typealias actionHandler = (MenuItem)->()
 
 //MARK: Enums
-enum ConentAlignment {
+enum ContentAlignment {
     case left, right, center
 }
-enum WBGesture {
-    case Swipe
-    case Pan
+enum Gesture {
+    case swipe
+    case pan
 }
 enum Direction {
-    case Left, Right, Top, Bottom
+    case left, right, top, bottom
 }
 enum MenuLayout: Int {
-    case Horizontal = 0, Vertical, Square
+    case horizontal = 0, vertical, square
 }
 
-protocol WBMenuViewDelegate: class {
-    func menuView(_ view: WBMenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction
-    func menuView(_ view: WBMenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout
-    func menuView(_ view: WBMenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool
-    func menuView(_ view: WBMenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction
-}
-
-extension WBMenuViewDelegate {
-    func menuView(_ view: WBMenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
-        return .Bottom
-    }
-    func menuView(_ view: WBMenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
-        return .Horizontal
-    }
-    func menuView(_ view: WBMenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool {
-        return true
-    }
-    func menuView(_ view: WBMenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction {
-        return .Top
-    }
-}
-
-class WBMenuView: UIView {
+//MARK: Class
+class MenuView: UIView {
     
     //MARK: Instance Variables
-    private var items: [WBMenuItem]?
-    private var stackView = UIStackView(frame: CGRect.zero)
-    private var stackViewTop = UIStackView(frame: CGRect.zero)
-    private var stackViewBottom = UIStackView(frame: CGRect.zero)
+    private var items: [MenuItem]?
+    private var stackView = UIStackView(frame: .zero)
+    private var stackViewTop = UIStackView(frame: .zero)
+    private var stackViewBottom = UIStackView(frame: .zero)
     private var tableViewCell: UITableViewCell?
     private var changableConstraint: NSLayoutConstraint!
-    private var direction: Direction = .Right
-    private var menuLayout: MenuLayout = .Square
-    private var menuBtn = UIButton.init(type: UIButtonType.custom)
+    private var direction: Direction = .right
+    private var menuLayout: MenuLayout = .square
+    private var menuBtn = UIButton.init(type: .custom)
     private var _isMenuOpen = false
     private var indexPath: IndexPath!
-    weak var delegate: WBMenuViewDelegate?
+    weak var delegate: MenuViewDelegate?
     var isMenuOpen: Bool {
         return _isMenuOpen
     }
 
-    private var topSpacing: CGFloat = 5.0
-    private var bottomSpacing: CGFloat = 5.0
-    private var leftSpacing: CGFloat = 0.0
-    private var rightSpacing: CGFloat = 0.0
-    private var horizontalSpacing: CGFloat = 5.0
-    private var verticalSpacing: CGFloat = 5.0
-
-    public var swipeGesture: WBGesture! {
+    private enum Dimension {
+        static var topSpacing: CGFloat = 5.0
+        static var bottomSpacing: CGFloat = 5.0
+        static var leftSpacing: CGFloat = 0.0
+        static var rightSpacing: CGFloat = 0.0
+        static var horizontalSpacing: CGFloat = 5.0
+        static var verticalSpacing: CGFloat = 5.0
+    }
+    private enum MenuIcon {
+        static let nameHorizontal = "more_H"
+        static let nameVertical = "more"
+    }
+    private enum MenuBtnDimension {
+        static let width: CGFloat = 20.0
+        static let height: CGFloat = 30.0
+    }
+    
+    public var swipeGesture: Gesture! {
         didSet {
             guard let tableViewCell = self.tableViewCell else {
                 return
             }
             switch swipeGesture {
-            case .Swipe:
+            case .swipe:
                 switch direction {
-                case .Left, .Right:
+                case .left, .right:
                     tableViewCell.addGestureRecognizer(swipeLeftGestureRecognizer)
                     tableViewCell.addGestureRecognizer(swipeRightGestureRecognizer)
-                case .Top, .Bottom:
+                case .top, .bottom:
                     fatalError("You can not add in case of Top and Bottom as It will conflict with TableView Scrolling")
                 }
-            case .Pan:
+            case .pan:
                 tableViewCell.addGestureRecognizer(panGestureRecognizer)
             case .none:
                 fatalError("You need to provide Gesture")
@@ -104,33 +93,21 @@ class WBMenuView: UIView {
         return gesture
     }()
     lazy var swipeLeftGestureRecognizer: UISwipeGestureRecognizer = {
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture(gesture:)))
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(gesture:)))
         swipeLeft.direction = .left
         return swipeLeft
     }()
     lazy var swipeRightGestureRecognizer: UISwipeGestureRecognizer = {
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture(gesture:)))
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(gesture:)))
         swipeRight.direction = .right
         return swipeRight
     }()
-    
-    @objc func handlePan(gesture: UIPanGestureRecognizer) {
-        guard let tableViewCell = self.tableViewCell, let leadingConstraint = self.changableConstraint else {
-            return
-        }
-        let translation = gesture.translation(in: tableViewCell)
-        let newX = leadingConstraint.constant + translation.x
-        if newX >= -frame.size.width && newX <= 0.0 {
-            leadingConstraint.constant = newX
-            gesture.setTranslation(CGPoint.zero, in: tableViewCell)
-        }
-    }
     
     //MARK: Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    convenience init(tableViewCell: UITableViewCell, items: [WBMenuItem], gesture: WBGesture? = .Swipe, indexPath: IndexPath) {
+    convenience init(tableViewCell: UITableViewCell, items: [MenuItem], gesture: Gesture? = .swipe, indexPath: IndexPath) {
         self.init(frame: CGRect.zero)
         self.tableViewCell = tableViewCell
         self.items = items
@@ -144,36 +121,6 @@ class WBMenuView: UIView {
         fatalError("Init(:coder) is not been implemented")
     }
     
-    //MARK: Gesture Handling Methods
-    @objc func handleGesture(gesture: UISwipeGestureRecognizer) {
-        
-        switch direction {
-        case .Left:
-            switch gesture.direction {
-            case UISwipeGestureRecognizerDirection.right:
-                open()
-            case UISwipeGestureRecognizerDirection.left:
-                close()
-            default: break
-                
-            }
-        case .Right:
-            switch gesture.direction {
-            case UISwipeGestureRecognizerDirection.left:
-                open()
-            case UISwipeGestureRecognizerDirection.right:
-                close()
-            default: break
-                
-            }
-        default:
-            print("Default")
-        }
-        
-    }
-    
-    
-    
     //MARK: Helper Methods
     func open() {
         guard let changableConstraint = self.changableConstraint  else {
@@ -182,9 +129,9 @@ class WBMenuView: UIView {
         _isMenuOpen = true
         var value = CGFloat(0.0)
         switch direction {
-        case .Left,.Right:
+        case .left,.right:
             value = -frame.size.width
-        case .Top,.Bottom:
+        case .top,.bottom:
             value = -frame.size.height
         }
         changableConstraint.constant = value
@@ -193,7 +140,6 @@ class WBMenuView: UIView {
         }
     }
     func close() {
-        
         guard let changableConstraint = self.changableConstraint  else {
             return
         }
@@ -207,18 +153,18 @@ class WBMenuView: UIView {
     private func setupContentSpacing() {
         stackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        stackView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: leftSpacing).isActive = true
-        stackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: rightSpacing).isActive = true
-        stackView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: topSpacing).isActive = true
-        stackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: bottomSpacing).isActive = true
+        stackView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: Dimension.leftSpacing).isActive = true
+        stackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: Dimension.rightSpacing).isActive = true
+        stackView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: Dimension.topSpacing).isActive = true
+        stackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: Dimension.bottomSpacing).isActive = true
     }
     private func setupContentMenuLayout() {
         switch menuLayout {
-        case .Horizontal, .Vertical:
+        case .horizontal, .vertical:
             stackView.distribution = .fill
             stackView.axis = UILayoutConstraintAxis(rawValue: menuLayout.rawValue) ?? .horizontal
             addSubview(stackView)
-        case .Square:
+        case .square:
             stackView.distribution = .fillEqually
             stackView.axis = .vertical
             addSubview(stackView)
@@ -233,11 +179,11 @@ class WBMenuView: UIView {
         }
     }
     private func setupContentHorizontalSpacing() {
-        stackViewTop.spacing = horizontalSpacing
-        stackViewBottom.spacing = horizontalSpacing
+        stackViewTop.spacing = Dimension.horizontalSpacing
+        stackViewBottom.spacing = Dimension.horizontalSpacing
     }
     private func setupContentVerticalSpacing() {
-        stackView.spacing = verticalSpacing
+        stackView.spacing = Dimension.verticalSpacing
     }
     private func setupLayoutDirection() {
         guard let tableViewCell = self.tableViewCell else {
@@ -246,13 +192,13 @@ class WBMenuView: UIView {
         setupMenuItems(tableViewCell)
 
         switch direction {
-        case .Left:
+        case .left:
             showLeftMenu(tableViewCell)
-        case .Right:
+        case .right:
             showRightMenu(tableViewCell)
-        case .Top:
+        case .top:
             showTopMenu(tableViewCell)
-        case .Bottom:
+        case .bottom:
             showBottomMenu(tableViewCell)
         }
     }
@@ -261,13 +207,13 @@ class WBMenuView: UIView {
             if show == true {
                 if let position = delegate?.menuView(self, positionOfMenuIconForRowAtIndexPath: indexPath) {
                     switch position {
-                    case .Left:
+                    case .left:
                         showLeftMenuIcon()
-                    case .Right:
+                    case .right:
                         showRightMenuIcon()
-                    case .Top:
+                    case .top:
                         showTopMenuIcon()
-                    case .Bottom:
+                    case .bottom:
                         showBottomMenuIcon()
                     }
                 }
@@ -298,55 +244,55 @@ class WBMenuView: UIView {
     }
     private func showLeftMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        setMenuIcon(name: "more")
+        setMenuIcon(name: MenuIcon.nameVertical)
         menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0).isActive = true
         menuBtn.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0.0).isActive = true
-        menuBtn.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
-        menuBtn.widthAnchor.constraint(equalToConstant: 20.0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
     }
     private func showRightMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        setMenuIcon(name: "more")
+        setMenuIcon(name: MenuIcon.nameVertical)
         menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0).isActive = true
         menuBtn.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0.0).isActive = true
-        menuBtn.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
-        menuBtn.widthAnchor.constraint(equalToConstant: 20.0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
     }
     private func showTopMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        setMenuIcon(name: "more_H")
+        setMenuIcon(name: MenuIcon.nameHorizontal)
         menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.topAnchor.constraint(equalTo: topAnchor, constant: 10.0).isActive = true
         menuBtn.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0.0).isActive = true
-        menuBtn.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
-        menuBtn.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
     }
     private func showBottomMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
-        setMenuIcon(name: "more_H")
+        setMenuIcon(name: MenuIcon.nameHorizontal)
         menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0).isActive = true
         menuBtn.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0.0).isActive = true
-        menuBtn.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
-        menuBtn.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
+        menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
+        menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
     }
     private func setupMenuItems(_ tableViewCell: UITableViewCell) {
         guard let items = items else {
             return
         }
         switch menuLayout {
-        case .Horizontal, .Vertical:
+        case .horizontal, .vertical:
             for item in items {
               item.setupUI()
               stackView.addArrangedSubview(item)
             }
-        case .Square:
+        case .square:
             if items.count > 1 {
                 for (index, item) in items.enumerated() {
                     if index % 2 == 0 {
@@ -394,6 +340,7 @@ class WBMenuView: UIView {
         leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
         trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
     }
+    
     //MARK: Action Methods
     @objc func menuBtnPressed(sender: UIButton) {
         if _isMenuOpen {
@@ -403,11 +350,45 @@ class WBMenuView: UIView {
         }
     }
     
+    //MARK: Gesture Handling Methods
+    @objc func handleSwipe(gesture: UISwipeGestureRecognizer) {
+        switch direction {
+        case .left:
+            switch gesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                open()
+            case UISwipeGestureRecognizerDirection.left:
+                close()
+            default: break
+            }
+        case .right:
+            switch gesture.direction {
+            case UISwipeGestureRecognizerDirection.left:
+                open()
+            case UISwipeGestureRecognizerDirection.right:
+                close()
+            default: break
+            }
+        default:
+            print("Default")
+        }
+    }
+    @objc func handlePan(gesture: UIPanGestureRecognizer) {
+        guard let tableViewCell = self.tableViewCell, let leadingConstraint = self.changableConstraint else {
+            return
+        }
+        let translation = gesture.translation(in: tableViewCell)
+        let newX = leadingConstraint.constant + translation.x
+        if newX >= -frame.size.width && newX <= 0.0 {
+            leadingConstraint.constant = newX
+            gesture.setTranslation(CGPoint.zero, in: tableViewCell)
+        }
+    }
 }
+
 //MARK: Alignment and Spacing Methods
-extension WBMenuView {
-    
-    func setMenuContentAlignment(_ alignment: ConentAlignment) {
+extension MenuView {
+    func setMenuContentAlignment(_ alignment: ContentAlignment) {
         switch alignment {
         case .left:
             stackView.alignment = .leading
@@ -424,23 +405,24 @@ extension WBMenuView {
         backgroundColor = color
     }
     func setMenuContentInset(_ top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
-        topSpacing = top
-        bottomSpacing = bottom
-        leftSpacing =  left
-        rightSpacing = right
+        Dimension.topSpacing = top
+        Dimension.bottomSpacing = bottom
+        Dimension.leftSpacing =  left
+        Dimension.rightSpacing = right
         setupContentSpacing()
     }
     func setMenuItemSpacingVertical(_ vertical: CGFloat) {
-       verticalSpacing = vertical
+       Dimension.verticalSpacing = vertical
        setupContentVerticalSpacing()
     }
     func setMenuItemSpacingHorizontal(_ horizontal: CGFloat) {
-        horizontalSpacing = horizontal
+        Dimension.horizontalSpacing = horizontal
         setupContentHorizontalSpacing()
     }
 }
-extension WBMenuView: UIGestureRecognizerDelegate {
-    
+
+//MARK: Gesture Recgonizer Delegate
+extension MenuView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer is UIPanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer {
             return true
@@ -462,108 +444,5 @@ extension WBMenuView: UIGestureRecognizerDelegate {
         }
         return true
     }
-    
-}
-
-////
-
-//MARK: Item View
-class WBMenuItem: UIView {
-    
-    //MARK: Instance Variables
-    private var titleLbl = UILabel(frame: CGRect.zero)
-    private var titleImage = UIImageView(frame: CGRect.zero)
-    private var actionBtn = UIButton.init(type: UIButtonType.custom)
-    private var stackView = UIStackView(frame: CGRect.zero)
-    private var action:actionHandler?
-
-    var itemIconSize: CGSize = CGSize(width: 50.0, height: 70.0)
-    var titleColor: UIColor? {
-        didSet {
-            titleLbl.textColor = titleColor
-        }
-    }
-    var itemBorderColor: UIColor? {
-        didSet {
-            actionBtn.layer.borderColor = itemBorderColor?.cgColor
-        }
-    }
-    var itemBorderWidth: CGFloat? {
-        didSet {
-            actionBtn.layer.borderWidth = itemBorderWidth ?? 0.0
-        }
-    }
-    var titleFont: UIFont? {
-        didSet {
-            titleLbl.font = titleFont
-        }
-    }
-    var actionBtnIcon: String? {
-        didSet {
-            actionBtn.setImage(UIImage(named: actionBtnIcon!), for: .normal)
-        }
-    }
-    
-    //MARK: Initializer
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    convenience init(title: String, icon: String, actionHandler: @escaping actionHandler) {
-        self.init(frame: CGRect.zero)
-        titleLbl.text = title
-        titleImage.image = UIImage(named: icon)
-        action = actionHandler
-        actionBtn.addTarget(self, action: #selector(actionBtnPressed(sender:)), for: .touchUpInside)
-       // setupUI()
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("Init(:coder) is not been implemented")
-    }
-    
-    //MARK: Helper Methods
-    func setupUI() {
-        
-        translatesAutoresizingMaskIntoConstraints = false
-        
-        titleLbl.numberOfLines = 0
-        titleLbl.textAlignment = .center
-        titleLbl.font = UIFont.systemFont(ofSize: 12.0)
-        titleColor = UIColor.black
-        titleLbl.textColor = UIColor.black
-        
-        titleImage.heightAnchor.constraint(equalToConstant: itemIconSize.height).isActive = true
-        titleImage.widthAnchor.constraint(equalToConstant: itemIconSize.width).isActive = true
-        titleImage.contentMode = .scaleAspectFit
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        stackView.axis = .vertical
-        addSubview(stackView)
-        
-        stackView.addArrangedSubview(titleImage)
-        stackView.addArrangedSubview(titleLbl)
-        stackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        
-        actionBtn.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(actionBtn)
-        actionBtn.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
-        actionBtn.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
-        actionBtn.topAnchor.constraint(equalTo: stackView.topAnchor).isActive = true
-        actionBtn.bottomAnchor.constraint(equalTo: stackView.bottomAnchor).isActive = true
-        
-    }
-    
-    //MARK: Action Methods
-    @objc func actionBtnPressed(sender: UIButton) {
-        guard let mAction = self.action else {
-            return
-        }
-        mAction(self)
-    }
-    
 }
 
