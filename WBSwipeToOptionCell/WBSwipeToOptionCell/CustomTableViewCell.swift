@@ -9,10 +9,10 @@
 import Foundation
 import UIKit
 
-class CustomTableViewCell: UITableViewCell {
+class MenuTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var labelTitle: UILabel!
-    @IBOutlet weak var buttonMore: UIButton!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var moreButton: UIButton!
     
     override func prepareForReuse() {
         super.prepareForReuse()
