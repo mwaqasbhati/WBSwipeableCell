@@ -27,9 +27,11 @@ enum MenuLayout: Int {
 }
 
 //MARK: Class
+
 class MenuView: UIView {
     
     //MARK: Instance Variables
+    
     private var items: [MenuItem]?
     private var stackView = UIStackView(frame: .zero)
     private var stackViewTop = UIStackView(frame: .zero)
@@ -103,7 +105,8 @@ class MenuView: UIView {
         return swipeRight
     }()
     
-    //MARK: Initializer
+    //MARK: Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -122,6 +125,7 @@ class MenuView: UIView {
     }
     
     //MARK: Helper Methods
+    
     func open() {
         guard let changableConstraint = self.changableConstraint  else {
             return
@@ -342,6 +346,7 @@ class MenuView: UIView {
     }
     
     //MARK: Action Methods
+    
     @objc func menuBtnPressed(sender: UIButton) {
         if _isMenuOpen {
             close()
@@ -351,6 +356,7 @@ class MenuView: UIView {
     }
     
     //MARK: Gesture Handling Methods
+    
     @objc func handleSwipe(gesture: UISwipeGestureRecognizer) {
         switch direction {
         case .left:
@@ -387,6 +393,7 @@ class MenuView: UIView {
 }
 
 //MARK: Alignment and Spacing Methods
+
 extension MenuView {
     func setMenuContentAlignment(_ alignment: ContentAlignment) {
         switch alignment {
@@ -422,6 +429,7 @@ extension MenuView {
 }
 
 //MARK: Gesture Recgonizer Delegate
+
 extension MenuView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer is UIPanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer {

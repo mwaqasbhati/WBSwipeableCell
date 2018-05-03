@@ -10,14 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    //MARK: Instance Variables
+    
     @IBOutlet weak var tableView: UITableView!
     private var items: [MenuView]?
+    
+    //MARK: View Controller Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = 190.0
     }
     
+    //MARK: Actions
     @objc func moreBtnPressed(sender: UIButton) {
         
         for (_, cell) in tableView.visibleCells.enumerated() {
@@ -51,29 +56,29 @@ extension ViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as? CustomTableViewCell else {
             return UITableViewCell()
         }
-        let item1 = MenuItem(title: "Delete", icon: "delete") { (item) in
+        let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
             
         }
-        item1.itemBorderColor = UIColor.white
-        item1.itemBorderWidth = 2.0
-        item1.itemIconSize = CGSize(width: 70, height: 70)
-        item1.titleColor = UIColor.gray
-        item1.titleFont = UIFont.systemFont(ofSize: 11.0)
-      //  item1.backgroundColor = UIColor.blue
-        let item2 = MenuItem(title: "Submit", icon: "save"){ (item) in
+        firstItem.itemBorderColor = UIColor.white
+        firstItem.itemBorderWidth = 2.0
+        firstItem.itemIconSize = CGSize(width: 70, height: 70)
+        firstItem.titleColor = UIColor.gray
+        firstItem.titleFont = UIFont.systemFont(ofSize: 11.0)
+        firstItem.backgroundColor = UIColor.blue
+        let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
             
         }
-        item2.itemBorderColor = UIColor.black
-        item2.itemBorderWidth = 2.0
+        secondItem.itemBorderColor = UIColor.black
+        secondItem.itemBorderWidth = 2.0
       //  item2.backgroundColor = UIColor.green
-        let item3 = MenuItem(title: "Save", icon: "submit"){ (item) in
+        let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
             
         }
-        item3.itemBorderColor = UIColor.black
-        item3.itemBorderWidth = 2.0
+        thirdItem.itemBorderColor = UIColor.black
+        thirdItem.itemBorderWidth = 2.0
       //  item3.backgroundColor = UIColor.yellow
        // WBMenuView.addOptionsView(tableViewCell: cell, [item1, item2, item3])
-        let menu = MenuView(tableViewCell: cell, items: [item1, item2, item3], indexPath: indexPath)
+        let menu = MenuView(tableViewCell: cell, items: [firstItem, secondItem, thirdItem], indexPath: indexPath)
         menu.delegate = self
         menu.setupUI()
         menu.setMenuContentAlignment(.left)

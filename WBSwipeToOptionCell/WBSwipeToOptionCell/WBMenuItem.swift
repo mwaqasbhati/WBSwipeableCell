@@ -9,15 +9,16 @@
 import UIKit
 
 //MARK: Item View
+
 class MenuItem: UIView {
     
     //MARK: Instance Variables
+    
     private var titleLbl = UILabel(frame: .zero)
     private var titleImage = UIImageView(frame: .zero)
     private var actionBtn = UIButton.init(type: .custom)
     private var stackView = UIStackView(frame: .zero)
     private var action:actionHandler?
-    
     var itemIconSize: CGSize = CGSize(width: 50.0, height: 70.0)
     var titleColor: UIColor? {
         didSet {
@@ -45,7 +46,8 @@ class MenuItem: UIView {
         }
     }
     
-    //MARK: Initializer
+    //MARK: Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -62,6 +64,7 @@ class MenuItem: UIView {
     }
     
     //MARK: Helper Methods
+    
     func setupUI() {
         
         translatesAutoresizingMaskIntoConstraints = false
@@ -99,6 +102,7 @@ class MenuItem: UIView {
     }
     
     //MARK: Action Methods
+    
     @objc func actionBtnPressed(sender: UIButton) {
         guard let mAction = self.action else {
             return
