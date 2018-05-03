@@ -51,6 +51,11 @@ class MenuItem: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     convenience init(title: String, icon: String, actionHandler: @escaping actionHandler) {
         self.init(frame: CGRect.zero)
         titleLbl.text = title
@@ -65,6 +70,11 @@ class MenuItem: UIView {
     
     //MARK: Helper Methods
     
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     func setupUI() {
         
         translatesAutoresizingMaskIntoConstraints = false

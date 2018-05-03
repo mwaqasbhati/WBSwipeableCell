@@ -19,7 +19,7 @@ class CustomTableViewCell: UITableViewCell {
         
         if let optionView = self.viewWithTag(-1) as? MenuView {
             if optionView.isMenuOpen {
-                optionView.close()
+                optionView.close(withAnimation: true)
             }
         }
     }

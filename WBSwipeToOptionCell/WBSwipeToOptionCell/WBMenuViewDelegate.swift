@@ -8,6 +8,12 @@
 
 import UIKit
 
+/**
+ This method used to set Menu Button Image.
+ 
+ - parameter name: This will be the name of image
+ */
+
 protocol MenuViewDelegate: class {
     func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction
     func menuView(_ menuview: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout

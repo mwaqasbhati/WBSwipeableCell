@@ -28,15 +28,15 @@ class ViewController: UIViewController {
         for (_, cell) in tableView.visibleCells.enumerated() {
             if let optionView = cell.viewWithTag(-1) as? MenuView {
                 if optionView.isMenuOpen {
-                    optionView.close()
+                    optionView.close(withAnimation: true)
                 }
             }
         }
         if let optionView = sender.superview?.superview?.viewWithTag(-1) as? MenuView {
             if optionView.isMenuOpen {
-                optionView.close()
+                optionView.close(withAnimation: true)
             } else {
-                optionView.open()
+                optionView.open(from: optionView.menuDirection, withAnimation: true)
             }
         }
         
@@ -80,7 +80,7 @@ extension ViewController: UITableViewDataSource {
        // WBMenuView.addOptionsView(tableViewCell: cell, [item1, item2, item3])
         let menu = MenuView(tableViewCell: cell, items: [firstItem, secondItem, thirdItem], indexPath: indexPath)
         menu.delegate = self
-        menu.setupUI()
+        menu.setupMenuLayout()
         menu.setMenuContentAlignment(.left)
         menu.setBackgroundColor(UIColor.blue)
         menu.setMenuItemSpacingVertical(10.0)
