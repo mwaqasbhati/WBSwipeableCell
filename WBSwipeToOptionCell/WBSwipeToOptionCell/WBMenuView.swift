@@ -27,9 +27,38 @@ enum MenuLayout: Int {
 }
 
 //MARK: Class
+
+/**
+ ## Feature Support
+ 
+ This class does some awesome things. It supports:
+ 
+ - Support Horizontal Layout
+ - Support Vertical Layout
+ - Support Square Layout
+ 
+ ## Examples
+ 
+ Here is an example use case indented by four spaces because that indicates a
+ code block:
+ 
+ let menu = MenuView(tableViewCell: cell, items: [firstItem, secondItem, thirdItem], indexPath: indexPath)
+ menu.delegate = self
+ menu.setupMenuLayout()
+ 
+ ## Warnings
+ 
+ There are some things you should be careful of:
+ 
+ 1. For Vertical Layout, your cell height should be greater than 70
+ 2. For Horizontal Layout, your cell height should be greater than 70
+ 3. For Square Layout, your cell height should be greater than 140 as each item default size is 70, 70
+ */
+
 class MenuView: UIView {
     
     //MARK: Instance Variables
+    
     private var items: [MenuItem]?
     private var stackView = UIStackView(frame: .zero)
     private var stackViewTop = UIStackView(frame: .zero)
@@ -45,7 +74,9 @@ class MenuView: UIView {
     var isMenuOpen: Bool {
         return _isMenuOpen
     }
-
+    var menuDirection: Direction {
+        return direction
+    }
     private enum Dimension {
         static var topSpacing: CGFloat = 5.0
         static var bottomSpacing: CGFloat = 5.0
@@ -63,6 +94,11 @@ class MenuView: UIView {
         static let height: CGFloat = 30.0
     }
     
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     public var swipeGesture: Gesture! {
         didSet {
             guard let tableViewCell = self.tableViewCell else {
@@ -103,10 +139,16 @@ class MenuView: UIView {
         return swipeRight
     }()
     
-    //MARK: Initializer
+    //MARK: Initializers
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     convenience init(tableViewCell: UITableViewCell, items: [MenuItem], gesture: Gesture? = .swipe, indexPath: IndexPath) {
         self.init(frame: CGRect.zero)
         self.tableViewCell = tableViewCell
@@ -122,7 +164,14 @@ class MenuView: UIView {
     }
     
     //MARK: Helper Methods
-    func open() {
+    
+    /**
+     This method used to open Menu View.
+     
+     - parameter direction: The direction from which you want to open
+     - parameter animated: Animation that will be used to animate view opening
+     */
+    func open(from direction: Direction,withAnimation animated: Bool) {
         guard let changableConstraint = self.changableConstraint  else {
             return
         }
@@ -135,22 +184,36 @@ class MenuView: UIView {
             value = -frame.size.height
         }
         changableConstraint.constant = value
-        UIView.animate(withDuration: 1.0) {
+        if animated {
+            UIView.animate(withDuration: 1.0) {
+                self.tableViewCell?.layoutIfNeeded()
+            }
+        } else {
             self.tableViewCell?.layoutIfNeeded()
         }
     }
-    func close() {
+    /**
+     This method used to close Menu View
+     */
+    func close(withAnimation animated: Bool) {
         guard let changableConstraint = self.changableConstraint  else {
             return
         }
         _isMenuOpen = false
         changableConstraint.constant = 0.0
-        UIView.animate(withDuration: 1.0) {
+        if animated {
+            UIView.animate(withDuration: 1.0) {
+                self.tableViewCell?.layoutIfNeeded()
+            }
+        } else {
             self.tableViewCell?.layoutIfNeeded()
         }
     }
-    
-    private func setupContentSpacing() {
+    /**
+     This method is used for content spacing like leading, trailing, top and bottom
+     
+     */
+    private func setupMenuContentSpacing() {
         stackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         stackView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: Dimension.leftSpacing).isActive = true
@@ -158,7 +221,11 @@ class MenuView: UIView {
         stackView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: Dimension.topSpacing).isActive = true
         stackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: Dimension.bottomSpacing).isActive = true
     }
-    private func setupContentMenuLayout() {
+    /**
+     This method is used for Menu Layout on the base of
+     
+     */
+    private func setupContentMenuLayout(menuLayout: MenuLayout) {
         switch menuLayout {
         case .horizontal, .vertical:
             stackView.distribution = .fill
@@ -174,34 +241,44 @@ class MenuView: UIView {
             if items.count > 1 {
                 stackView.addArrangedSubview(stackViewTop)
                 stackView.addArrangedSubview(stackViewBottom)
-                setupContentHorizontalSpacing()
+                setupMenuItemsHorizontalSpacing()
             }
         }
     }
-    private func setupContentHorizontalSpacing() {
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+    private func setupMenuItemsHorizontalSpacing() {
         stackViewTop.spacing = Dimension.horizontalSpacing
         stackViewBottom.spacing = Dimension.horizontalSpacing
     }
-    private func setupContentVerticalSpacing() {
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+    private func setupMenuItemsVerticalSpacing() {
         stackView.spacing = Dimension.verticalSpacing
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func setupLayoutDirection() {
         guard let tableViewCell = self.tableViewCell else {
             return
         }
-        setupMenuItems(tableViewCell)
-
-        switch direction {
-        case .left:
-            showLeftMenu(tableViewCell)
-        case .right:
-            showRightMenu(tableViewCell)
-        case .top:
-            showTopMenu(tableViewCell)
-        case .bottom:
-            showBottomMenu(tableViewCell)
-        }
+        setupMenuItems(tableViewCell, with: menuLayout)
+        showMenuIn(tableViewCell, from: direction)
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func setupMenuIconPosition() {
         if let show = delegate?.menuView(self, showMenuIconForRowAtIndexPath: indexPath) {
             if show == true {
@@ -220,7 +297,12 @@ class MenuView: UIView {
             }
         }
     }
-    func setupUI() {
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+    func setupMenuLayout() {
         
         backgroundColor = UIColor.brown
         translatesAutoresizingMaskIntoConstraints = false
@@ -231,10 +313,10 @@ class MenuView: UIView {
         if let menuLayout = delegate?.menuView(self, menuLayoutForRowAtIndexPath: indexPath) {
             self.menuLayout = menuLayout
         }
-        setupContentMenuLayout()
+        setupContentMenuLayout(menuLayout: self.menuLayout)
         
-        setupContentSpacing()
-        setupContentHorizontalSpacing()
+        setupMenuContentSpacing()
+        setupMenuItemsHorizontalSpacing()
         
         if let direction = delegate?.menuView(self, directionForRowAtIndexPath: indexPath) {
             self.direction = direction
@@ -242,47 +324,72 @@ class MenuView: UIView {
         setupLayoutDirection()
         setupMenuIconPosition()
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func showLeftMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
         setMenuIcon(name: MenuIcon.nameVertical)
-        menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+      //  menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0).isActive = true
         menuBtn.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0.0).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func showRightMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
         setMenuIcon(name: MenuIcon.nameVertical)
-        menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+     //   menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0).isActive = true
         menuBtn.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0.0).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func showTopMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
         setMenuIcon(name: MenuIcon.nameHorizontal)
-        menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+    //    menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.topAnchor.constraint(equalTo: topAnchor, constant: 10.0).isActive = true
         menuBtn.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0.0).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     private func showBottomMenuIcon() {
         menuBtn.translatesAutoresizingMaskIntoConstraints = false
         setMenuIcon(name: MenuIcon.nameHorizontal)
-        menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+     //   menuBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         addSubview(menuBtn)
         menuBtn.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0).isActive = true
         menuBtn.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0.0).isActive = true
         menuBtn.heightAnchor.constraint(equalToConstant: MenuBtnDimension.width).isActive = true
         menuBtn.widthAnchor.constraint(equalToConstant: MenuBtnDimension.height).isActive = true
     }
-    private func setupMenuItems(_ tableViewCell: UITableViewCell) {
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+    private func setupMenuItems(_ tableViewCell: UITableViewCell,with menuLayout: MenuLayout) {
         guard let items = items else {
             return
         }
@@ -312,67 +419,89 @@ class MenuView: UIView {
         }
         tableViewCell.addSubview(self)
     }
-    private func showLeftMenu(_ tableViewCell: UITableViewCell) {
-        changableConstraint = tableViewCell.leadingAnchor.constraint(equalTo: trailingAnchor)
-        changableConstraint?.isActive = true
-        widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
-        topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
-        bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
-    }
-    private func showRightMenu(_ tableViewCell: UITableViewCell) {
-        changableConstraint = leadingAnchor.constraint(equalTo: tableViewCell.trailingAnchor)
-        changableConstraint?.isActive = true
-        widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
-        topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
-        bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
-    }
-    private func showTopMenu(_ tableViewCell: UITableViewCell) {
-        changableConstraint = tableViewCell.topAnchor.constraint(equalTo: bottomAnchor)
-        changableConstraint?.isActive = true
-        heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
-        leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
-        trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
-    }
-    private func showBottomMenu(_ tableViewCell: UITableViewCell) {
-        changableConstraint = topAnchor.constraint(equalTo: tableViewCell.bottomAnchor)
-        changableConstraint?.isActive = true
-        heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
-        leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
-        trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+    private func showMenuIn(_ tableViewCell: UITableViewCell,from direction: Direction) {
+        switch direction {
+        case .left:
+            changableConstraint = tableViewCell.leadingAnchor.constraint(equalTo: trailingAnchor)
+            changableConstraint?.isActive = true
+            widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
+            topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
+            bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
+        case .right:
+            changableConstraint = leadingAnchor.constraint(equalTo: tableViewCell.trailingAnchor)
+            changableConstraint?.isActive = true
+            widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
+            topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
+            bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
+        case .top:
+            changableConstraint = tableViewCell.topAnchor.constraint(equalTo: bottomAnchor)
+            changableConstraint?.isActive = true
+            heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
+            leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
+            trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
+        case .bottom:
+            changableConstraint = topAnchor.constraint(equalTo: tableViewCell.bottomAnchor)
+            changableConstraint?.isActive = true
+            heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
+            leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
+            trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
+        }
     }
     
     //MARK: Action Methods
+    
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     @objc func menuBtnPressed(sender: UIButton) {
         if _isMenuOpen {
-            close()
+            close(withAnimation: true)
         } else {
-            open()
+            open(from: direction, withAnimation: true)
         }
     }
     
     //MARK: Gesture Handling Methods
+    
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     @objc func handleSwipe(gesture: UISwipeGestureRecognizer) {
         switch direction {
         case .left:
             switch gesture.direction {
             case UISwipeGestureRecognizerDirection.right:
-                open()
+                open(from: .left, withAnimation: true)
             case UISwipeGestureRecognizerDirection.left:
-                close()
+                close(withAnimation: true)
             default: break
             }
         case .right:
             switch gesture.direction {
             case UISwipeGestureRecognizerDirection.left:
-                open()
+                open(from: .right, withAnimation: true)
             case UISwipeGestureRecognizerDirection.right:
-                close()
+                close(withAnimation: true)
             default: break
             }
         default:
             print("Default")
         }
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
         guard let tableViewCell = self.tableViewCell, let leadingConstraint = self.changableConstraint else {
             return
@@ -387,7 +516,14 @@ class MenuView: UIView {
 }
 
 //MARK: Alignment and Spacing Methods
+
 extension MenuView {
+    /**
+     This method is used to set Content Alignment.
+     
+     - parameter alignment: This can be used to alignment content to left, right, center
+     */
+
     func setMenuContentAlignment(_ alignment: ContentAlignment) {
         switch alignment {
         case .left:
@@ -398,30 +534,57 @@ extension MenuView {
             stackView.alignment = .trailing
         }
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
+
     func setMenuIcon(name: String) {
         menuBtn.setImage(UIImage(named: name), for: .normal)
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     func setBackgroundColor(_ color: UIColor) {
         backgroundColor = color
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     func setMenuContentInset(_ top: CGFloat, left: CGFloat, bottom: CGFloat, right: CGFloat) {
         Dimension.topSpacing = top
         Dimension.bottomSpacing = bottom
         Dimension.leftSpacing =  left
         Dimension.rightSpacing = right
-        setupContentSpacing()
+        setupMenuContentSpacing()
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     func setMenuItemSpacingVertical(_ vertical: CGFloat) {
        Dimension.verticalSpacing = vertical
-       setupContentVerticalSpacing()
+        setupMenuItemsVerticalSpacing()
     }
+    /**
+     This method used to set Menu Button Image.
+     
+     - parameter name: This will be the name of image
+     */
     func setMenuItemSpacingHorizontal(_ horizontal: CGFloat) {
         Dimension.horizontalSpacing = horizontal
-        setupContentHorizontalSpacing()
+        setupMenuItemsHorizontalSpacing()
     }
 }
 
 //MARK: Gesture Recgonizer Delegate
+
 extension MenuView: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer is UIPanGestureRecognizer || gestureRecognizer is UISwipeGestureRecognizer {
