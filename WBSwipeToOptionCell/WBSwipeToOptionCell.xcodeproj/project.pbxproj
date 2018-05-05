@@ -15,7 +15,7 @@
 		FA6412952080CCED00067BA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA6412942080CCED00067BA4 /* Assets.xcassets */; };
 		FA6412982080CCED00067BA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA6412962080CCED00067BA4 /* LaunchScreen.storyboard */; };
 		FA6412A02080CD0600067BA4 /* WBMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA64129F2080CD0600067BA4 /* WBMenuView.swift */; };
-		FA6412A320820E9F00067BA4 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6412A220820E9F00067BA4 /* CustomTableViewCell.swift */; };
+		FA6412A320820E9F00067BA4 /* MenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6412A220820E9F00067BA4 /* MenuTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +29,7 @@
 		FA6412972080CCED00067BA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FA6412992080CCED00067BA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA64129F2080CD0600067BA4 /* WBMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WBMenuView.swift; sourceTree = "<group>"; };
-		FA6412A220820E9F00067BA4 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
+		FA6412A220820E9F00067BA4 /* MenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 				FA64129F2080CD0600067BA4 /* WBMenuView.swift */,
 				FA4064BA2094D03800F455C6 /* WBMenuItem.swift */,
 				FA4064BC2094D0F800F455C6 /* WBMenuViewDelegate.swift */,
-				FA6412A220820E9F00067BA4 /* CustomTableViewCell.swift */,
+				FA6412A220820E9F00067BA4 /* MenuTableViewCell.swift */,
 			);
 			path = WBSwipeToOptionCell;
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 				FA4064BB2094D03800F455C6 /* WBMenuItem.swift in Sources */,
 				FA6412A02080CD0600067BA4 /* WBMenuView.swift in Sources */,
 				FA4064BD2094D0F800F455C6 /* WBMenuViewDelegate.swift in Sources */,
-				FA6412A320820E9F00067BA4 /* CustomTableViewCell.swift in Sources */,
+				FA6412A320820E9F00067BA4 /* MenuTableViewCell.swift in Sources */,
 				FA64128E2080CCED00067BA4 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

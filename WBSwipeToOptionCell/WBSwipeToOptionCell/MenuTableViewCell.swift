@@ -3,7 +3,7 @@
 //  WBSwipeToOptionCell
 //
 //  Created by MacBook on 4/14/18.
-//  Copyright © 2018 Waqas Sultan. All rights reserved.
+//  Copyright © 2018 Waqas Bhati. All rights reserved.
 //
 
 import Foundation
@@ -18,7 +18,7 @@ class MenuTableViewCell: UITableViewCell {
         super.prepareForReuse()
         
         if let optionView = self.viewWithTag(-1) as? MenuView {
-            if optionView.isMenuOpen {
+            if optionView.menuOpen {
                 optionView.close(withAnimation: true)
             }
         }

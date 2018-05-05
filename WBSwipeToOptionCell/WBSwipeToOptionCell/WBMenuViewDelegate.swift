@@ -3,15 +3,15 @@
 //  WBSwipeToOptionCell
 //
 //  Created by MacBook on 4/28/18.
-//  Copyright © 2018 Waqas Sultan. All rights reserved.
+//  Copyright © 2018 Waqas Bhati. All rights reserved.
 //
 
 import UIKit
 
 /**
- This method used to set Menu Button Image.
+ This Protocol will be used to create layout with specifications for the class who will implement it by conforming.
  
- - parameter name: This will be the name of image
+ - function directionForRowAtIndexPath: 
  */
 
 protocol MenuViewDelegate: class {

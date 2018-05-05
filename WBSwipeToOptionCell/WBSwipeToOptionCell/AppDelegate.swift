@@ -3,7 +3,7 @@
 //  WBSwipeToOptionCell
 //
 //  Created by MacBook on 4/13/18.
-//  Copyright © 2018 Waqas Sultan. All rights reserved.
+//  Copyright © 2018 Waqas Bhati. All rights reserved.
 //
 
 import UIKit
