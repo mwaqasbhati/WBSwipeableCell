@@ -25,3 +25,18 @@ class MenuTableViewCell: UITableViewCell {
     }
 }
 
+class MenuCollectionViewCell: UICollectionViewCell {
+    
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var moreButton: UIButton!
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let optionView = self.viewWithTag(-1) as? MenuView {
+            if optionView.menuOpen {
+                optionView.close(withAnimation: true)
+            }
+        }
+    }
+}

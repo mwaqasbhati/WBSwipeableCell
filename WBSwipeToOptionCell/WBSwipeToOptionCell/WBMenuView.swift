@@ -41,7 +41,7 @@ enum MenuLayout: Int {
  Here is an example use case indented by four spaces because that indicates a
  code block:
  
- let menu = MenuView(tableViewCell: cell, items: [firstItem, secondItem, thirdItem], indexPath: indexPath)
+ let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem], indexPath: indexPath)
  menu.delegate = self
  menu.setupMenuLayout()
  
@@ -62,7 +62,7 @@ open class MenuView: UIView {
     private var stackView = UIStackView(frame: .zero)
     private var stackViewTopRow = UIStackView(frame: .zero)
     private var stackViewBottomRow = UIStackView(frame: .zero)
-    private var tableViewCell: UITableViewCell?
+    private var mCell: UIView?
     private var changableConstraint: NSLayoutConstraint!
     private var direction: Direction = .right
     private var menuLayout: MenuLayout = .square
@@ -97,8 +97,8 @@ open class MenuView: UIView {
         static let nameVertical = "more"
     }
     private enum MenuButtonDimension {
-        static let width: CGFloat = 20.0
-        static let height: CGFloat = 30.0
+        static let width: CGFloat = 10.0
+        static let height: CGFloat = 20.0
     }
     
     /**
@@ -107,22 +107,22 @@ open class MenuView: UIView {
      */
     var swipeGesture: Gesture? {
         didSet {
-            guard let tableViewCell = self.tableViewCell, let swipeGesture = swipeGesture else {
+            guard let mCell = self.mCell, let swipeGesture = swipeGesture else {
                 return
             }
             switch swipeGesture {
             case .swipe:
                 switch direction {
                 case .left, .right:
-                    tableViewCell.addGestureRecognizer(swipeLeftGestureRecognizer)
-                    tableViewCell.addGestureRecognizer(swipeRightGestureRecognizer)
+                    mCell.addGestureRecognizer(swipeLeftGestureRecognizer)
+                    mCell.addGestureRecognizer(swipeRightGestureRecognizer)
                 case .top, .bottom:
                     fatalError("You can not add in case of Top and Bottom as It will conflict with TableView Scrolling")
                 }
             case .pan:
                 switch direction {
                 case .left, .right:
-                    tableViewCell.addGestureRecognizer(panGestureRecognizer)
+                    mCell.addGestureRecognizer(panGestureRecognizer)
                 case .top, .bottom:
                     fatalError("You can not add in case of Top and Bottom as It will conflict with TableView Scrolling")
                 }
@@ -154,14 +154,14 @@ open class MenuView: UIView {
     /**
      This method used to initialize Menu View
      
-     - parameter tableViewCell: cell on which we want to show Menu View
+     - parameter mCell: cell on which we want to show Menu View
      - parameter items: array of menu Items that will be shown in Menu View
      - parameter gesture: we can provide two type of gesture to the cell default will be swipe //optional
-     - parameter indexPath: indexPath of the tableViewCell
+     - parameter indexPath: indexPath of the mCell
      */
-    convenience init(tableViewCell: UITableViewCell, items: [MenuItem], gesture: Gesture? = .swipe, indexPath: IndexPath) {
+    convenience init(mCell: UIView, items: [MenuItem], gesture: Gesture? = .swipe, indexPath: IndexPath) {
         self.init(frame: CGRect.zero)
-        self.tableViewCell = tableViewCell
+        self.mCell = mCell
         self.items = items
         self.indexPath = indexPath
         self.menuButton.addTarget(self, action: #selector(menuBtnPressed(sender:)), for: .touchUpInside)
@@ -196,10 +196,10 @@ open class MenuView: UIView {
         changableConstraint.constant = value
         if animated {
             UIView.animate(withDuration: 1.0) {
-                self.tableViewCell?.layoutIfNeeded()
+                self.mCell?.layoutIfNeeded()
             }
         } else {
-            self.tableViewCell?.layoutIfNeeded()
+            self.mCell?.layoutIfNeeded()
         }
     }
     /**
@@ -213,10 +213,10 @@ open class MenuView: UIView {
         changableConstraint.constant = 0.0
         if animated {
             UIView.animate(withDuration: 1.0) {
-                self.tableViewCell?.layoutIfNeeded()
+                self.mCell?.layoutIfNeeded()
             }
         } else {
-            self.tableViewCell?.layoutIfNeeded()
+            self.mCell?.layoutIfNeeded()
         }
     }
     
@@ -265,11 +265,11 @@ open class MenuView: UIView {
      - parameter name: direction (left, right, top, bottom) layout will be based on the direction
      */
     private func setupLayoutDirection(_ direction: Direction) {
-        guard let tableViewCell = self.tableViewCell else {
+        guard let mCell = self.mCell else {
             return
         }
-        setupMenuItems(tableViewCell, with: menuLayout)
-        showMenuIn(tableViewCell, from: direction)
+        setupMenuItems(mCell, with: menuLayout)
+        showMenuIn(mCell, from: direction)
     }
     /**
      This method used to position menu three dot Icon
@@ -378,10 +378,10 @@ open class MenuView: UIView {
     /**
      This method used to layout Menu items in the Menu View
      
-     - parameter tableViewCell: cell on which we want Menu View to be displayed
+     - parameter mCell: cell on which we want Menu View to be displayed
      - parameter menuLayout: MenuLayout (horizontal, vertical, square) on this basis we will display Menu Items in Layout
      */
-    private func setupMenuItems(_ tableViewCell: UITableViewCell,with menuLayout: MenuLayout) {
+    private func setupMenuItems(_ mCell: UIView,with menuLayout: MenuLayout) {
         guard let items = items else {
             return
         }
@@ -409,40 +409,40 @@ open class MenuView: UIView {
                 }
             }
         }
-        tableViewCell.addSubview(self)
+        mCell.addSubview(self)
     }
     /**
      This method used to show Menu from left, right, top or bottom direction
      
-     - parameter tableViewCell: cell on which we want Menu View to be displayed
+     - parameter mCell: cell on which we want Menu View to be displayed
      - parameter menuLayout: MenuLayout (horizontal, vertical, square) on this basis we will display Menu Items in Layout
      */
-    private func showMenuIn(_ tableViewCell: UITableViewCell,from direction: Direction) {
+    private func showMenuIn(_ mCell: UIView, from direction: Direction) {
         switch direction {
         case .left:
-            changableConstraint = tableViewCell.leadingAnchor.constraint(equalTo: trailingAnchor)
+            changableConstraint = mCell.leadingAnchor.constraint(equalTo: trailingAnchor)
             changableConstraint?.isActive = true
-            widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
-            topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
-            bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
+            widthAnchor.constraint(equalTo: mCell.widthAnchor, constant: 0.0).isActive = true
+            topAnchor.constraint(equalTo: mCell.topAnchor).isActive = true
+            bottomAnchor.constraint(equalTo: mCell.bottomAnchor).isActive = true
         case .right:
-            changableConstraint = leadingAnchor.constraint(equalTo: tableViewCell.trailingAnchor)
+            changableConstraint = leadingAnchor.constraint(equalTo: mCell.trailingAnchor)
             changableConstraint?.isActive = true
-            widthAnchor.constraint(equalTo: tableViewCell.widthAnchor, constant: 0.0).isActive = true
-            topAnchor.constraint(equalTo: tableViewCell.topAnchor).isActive = true
-            bottomAnchor.constraint(equalTo: tableViewCell.bottomAnchor).isActive = true
+            widthAnchor.constraint(equalTo: mCell.widthAnchor, constant: 0.0).isActive = true
+            topAnchor.constraint(equalTo: mCell.topAnchor).isActive = true
+            bottomAnchor.constraint(equalTo: mCell.bottomAnchor).isActive = true
         case .top:
-            changableConstraint = tableViewCell.topAnchor.constraint(equalTo: bottomAnchor)
+            changableConstraint = mCell.topAnchor.constraint(equalTo: bottomAnchor)
             changableConstraint?.isActive = true
-            heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
-            leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
-            trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
+            heightAnchor.constraint(equalTo: mCell.heightAnchor, constant: 0.0).isActive = true
+            leadingAnchor.constraint(equalTo: mCell.leadingAnchor).isActive = true
+            trailingAnchor.constraint(equalTo: mCell.trailingAnchor).isActive = true
         case .bottom:
-            changableConstraint = topAnchor.constraint(equalTo: tableViewCell.bottomAnchor)
+            changableConstraint = topAnchor.constraint(equalTo: mCell.bottomAnchor)
             changableConstraint?.isActive = true
-            heightAnchor.constraint(equalTo: tableViewCell.heightAnchor, constant: 0.0).isActive = true
-            leadingAnchor.constraint(equalTo: tableViewCell.leadingAnchor).isActive = true
-            trailingAnchor.constraint(equalTo: tableViewCell.trailingAnchor).isActive = true
+            heightAnchor.constraint(equalTo: mCell.heightAnchor, constant: 0.0).isActive = true
+            leadingAnchor.constraint(equalTo: mCell.leadingAnchor).isActive = true
+            trailingAnchor.constraint(equalTo: mCell.trailingAnchor).isActive = true
         }
     }
     
@@ -491,14 +491,14 @@ open class MenuView: UIView {
      - parameter gesture: pan gesture from which we will get velocity, angle etc.
      */
     @objc func handlePan(gesture: UIPanGestureRecognizer) {
-        guard let tableViewCell = self.tableViewCell, let leadingConstraint = self.changableConstraint else {
+        guard let mCell = self.mCell, let leadingConstraint = self.changableConstraint else {
             return
         }
-        let translation = gesture.translation(in: tableViewCell)
+        let translation = gesture.translation(in: mCell)
         let newX = leadingConstraint.constant + translation.x
         if newX >= -frame.size.width && newX <= 0.0 {
             leadingConstraint.constant = newX
-            gesture.setTranslation(CGPoint.zero, in: tableViewCell)
+            gesture.setTranslation(CGPoint.zero, in: mCell)
         }
     }
 }
@@ -633,11 +633,11 @@ extension MenuView: UIGestureRecognizerDelegate {
         return false
     }
     override open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard let tableViewCell = tableViewCell else {
+        guard let mCell = mCell else {
             return false
         }
         if let pan = gestureRecognizer as? UIPanGestureRecognizer {
-            let velocity = pan.velocity(in: tableViewCell)
+            let velocity = pan.velocity(in: mCell)
             let radian = atan(velocity.y/velocity.x)
             let degree = Double(radian * 180) / Double.pi
             let thresholdAngle = 20.0
