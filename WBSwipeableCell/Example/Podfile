@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'WBSwipeableCell_Example' do
+  pod 'WBSwipeableCell', :path => '../'
+
+  target 'WBSwipeableCell_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

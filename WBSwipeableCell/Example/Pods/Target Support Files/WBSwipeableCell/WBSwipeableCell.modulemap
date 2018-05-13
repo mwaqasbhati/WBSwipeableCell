@@ -1,0 +1,6 @@
+framework module WBSwipeableCell {
+  umbrella header "WBSwipeableCell-umbrella.h"
+
+  export *
+  module * { export * }
+}

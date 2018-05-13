@@ -1,0 +1,16 @@
+PODS:
+  - WBSwipeableCell (0.1.0)
+
+DEPENDENCIES:
+  - WBSwipeableCell (from `../`)
+
+EXTERNAL SOURCES:
+  WBSwipeableCell:
+    :path: ../
+
+SPEC CHECKSUMS:
+  WBSwipeableCell: 0c8d2d53cc32a95a992cd9c5a55ccb99b8981409
+
+PODFILE CHECKSUM: d78ed55f809f9fa74d1b8a9720ffe616842700cb
+
+COCOAPODS: 1.4.0
