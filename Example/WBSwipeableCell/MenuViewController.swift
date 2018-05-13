@@ -37,7 +37,7 @@ class MenuViewController: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let dest = segue.destination as? ViewController {
+        if let dest = segue.destination as? TableViewController {
             dest.setMenuLayout(layouts[selectedIndex.section][selectedIndex.row])
             dest.setMenuDirection(directions[selectedIndex.section][selectedIndex.row])
         } else if let dest = segue.destination as? CollectionViewController {
