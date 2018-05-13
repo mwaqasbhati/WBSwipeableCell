@@ -80,23 +80,23 @@ pod 'WBSwipeableCell'
 You need to add below mentioned code in 'cellForRowAt' like below
 
 ````swift
-override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
-            // button click
-        }
-        let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
-           // button click
-        }
-        let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
-           // button click 
-        }
-        let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
-           // button click
-        }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
-        let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
-        menu.delegate = self
-        return cell
+func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
+          // button click
+      }
+      let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
+         // button click
+      }
+      let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
+         // button click 
+      }
+      let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
+         // button click
+      }
+      let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
+      let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
+      menu.delegate = self
+      return cell
 }
 ````
 
@@ -104,17 +104,17 @@ Adopt the `MenuViewDelegate` protocol:
 
 ````swift
 func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
-        return .bottom
-    }
-    func menuView(_ menuview: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
-        return .horizontal
-    }
-    func menuView(_ menuview: MenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool {
-        return true
-    }
-    func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction {
-        return .top
-    }
+     return .bottom
+}
+func menuView(_ menuview: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
+     return .horizontal
+}
+func menuView(_ menuview: MenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool {
+     return true
+}
+func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction {
+     return .top
+}
 ````
 
 
