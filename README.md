@@ -81,10 +81,22 @@ You need to add below mentioned code in 'cellForRowAt' like below
 
 ````swift
 override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
-    let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
-    menu.delegate = self
-    return cell
+       let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
+            // button click
+        }
+        let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
+           // button click
+        }
+        let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
+           // button click 
+        }
+        let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
+           // button click
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
+        let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
+        menu.delegate = self
+        return cell
 }
 ````
 
