@@ -93,7 +93,7 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
       let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
          // button click
       }
-      let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! SwipeTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
       let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
       menu.delegate = self
       return cell
