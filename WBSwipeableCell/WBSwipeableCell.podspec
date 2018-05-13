@@ -27,9 +27,9 @@ Pod::Spec.new do |s|
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   s.swift_version = '4.0'
   s.ios.deployment_target = '9.0'
-  s.source_files = 'WBSwipeableCell/Classes/*.swift'
+  s.source_files = 'Classes/*.swift'
   s.resource_bundles = {
-    'WBSwipeableCell' => ['WBSwipeableCell/Assets/*.png']
+    'WBSwipeableCell' => ['Assets/*.png']
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
