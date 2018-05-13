@@ -28,9 +28,10 @@ Pod::Spec.new do |s|
   s.swift_version = '4.0'
   s.ios.deployment_target = '9.0'
   s.source_files = 'WBSwipeableCell/Classes/*.swift'
-  s.resource_bundles = {
-    'WBSwipeableCell' => ['WBSwipeableCell/Assets/*.png']
-  }
+  s.ios.resources = 'WBSwipeableCell/Assets/*.{png,jpg}'
+  #  s.resource_bundles = {
+  #  'WBSwipeableCell' => ['WBSwipeableCell/Assets/*.png']
+  #}
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
