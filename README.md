@@ -33,26 +33,31 @@ The transition style describes how the action buttons are exposed during the swi
 
 For Horizontal menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
      return .horizontal
 }
+````
 
 #### Vertical 
 
 For Vertical menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
      return .vertical
 }
+````
 
 #### Square 
 
 For Square menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
      return .square
 }
-
+````
 
 ### Expansion Styles
 
@@ -66,49 +71,62 @@ The expansion style describes the behavior when the cell is swiped past a define
 
 Expansion from the left side of the cell we need to implement one optinal method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .left
 }
+````
+
 
 #### Right
 
 Expansion from the right side of the cell we need to implement one optinal method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .right
 }
+````
 
 
 #### Top
 
 Expansion from the top side of the cell we need to implement one optinal method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .top
 }
+````
 
 
 #### Bottom
 
 Expansion from the bottom side of the cell we need to implement one optinal method of 'MenuViewDelegate' protocol which is given below
 
+````swift
 func menuView(_ menuview: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .bottom
 }
+````
 
 ### Menu Icon show/hide & Dimension
 
 * If we want to show/hide icon, we need to implement below mentiond protocol method. It will show/hide based on the method return type value.
 
+````swift
 func menuView(_ menuview: MenuView, showMenuIconForRowAtIndexPath indexPath: IndexPath) -> Bool {
      return true
 }
+````
 
 * Below mentioned protocol method controls the position of the menu icon that will be left, right, top, bottom.
 
+````swift
 func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .top
 }
+````
 
 ## Requirements
 
