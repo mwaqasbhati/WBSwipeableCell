@@ -31,7 +31,7 @@ The transition style describes how the action buttons are exposed during the swi
 
 #### Horizontal 
 
-For Horizontal menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
+For Horizontal menu layout, we need to implement one optional delegate method of `MenuViewDelegate` protocol which is given below
 
 ````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
@@ -41,7 +41,7 @@ func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath
 
 #### Vertical 
 
-For Vertical menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
+For Vertical menu layout, we need to implement one optional delegate method of `MenuViewDelegate` protocol which is given below
 
 ````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
@@ -51,7 +51,7 @@ func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath
 
 #### Square 
 
-For Square menu layout, we need to implement one optional delegate method of 'MenuViewDelegate' protocol which is given below
+For Square menu layout, we need to implement one optional delegate method of `MenuViewDelegate` protocol which is given below
 
 ````swift
 func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath) -> MenuLayout {
@@ -61,7 +61,7 @@ func menuView(_ view: MenuView, menuLayoutForRowAtIndexPath indexPath: IndexPath
 
 ### Expansion Styles
 
-The expansion style describes the behavior when the cell is swiped past a defined threshold.
+The expansion style describes the behavior when we call the `open` and `close` function of Menu View. 
 
 |             Left         |         Right          | Top | Bottom |
 |---------------------------------|------------------------------|------------------------------|---------------------------------|
@@ -128,6 +128,34 @@ func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPat
 }
 ````
 
+### Menu View
+
+we can customize menu View with the below mentioned functions.
+
+````swift
+let menu = MenuView(mCell: cell, items: [], indexPath: indexPath)
+menu.setMenuContentAlignment(.center)
+menu.setBgColor(UIColor(red: 90.0/255.0, green: 200.0/255.0, blue: 250.0/255.0, alpha: 1.0))
+menu.setMenuItemSpacingVertical(5.0)
+menu.setMenuItemSpacingHorizontal(15.0)
+menu.setMenuContentInset(10, left: 10, bottom: 10, right: -10)
+````
+
+### Menu Items
+
+we can customize each menu item with the below mentioned functions.
+
+````swift
+let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
+}
+firstItem.itemBorderColor = UIColor.white
+firstItem.itemBorderWidth = 2.0
+firstItem.itemIconSize = CGSize(width: 50, height: 30)
+firstItem.titleColor = UIColor.gray
+firstItem.titleFont = UIFont.systemFont(ofSize: 11.0)
+firstItem.backgroundColor = UIColor.blue
+````
+
 ## Requirements
 
 * Swift 4.0
@@ -148,21 +176,21 @@ pod 'WBSwipeableCell'
 
 ## Usage
 
-You need to add below mentioned code in `cellForRowAt` for #UITableView# and `cellForItemAt` for #UICollectionView#
+You need to add below mentioned code in `cellForRowAt` for UITableView and `cellForItemAt` for UICollectionView
 
 ````swift
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
-          // button click
+          // Menu Item click Handler
       }
       let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
-         // button click
+          // Menu Item click Handler
       }
       let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
-         // button click 
+          // Menu Item click Handler
       }
       let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
-         // button click
+          // Menu Item click Handler
       }
       let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
       let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
@@ -174,30 +202,21 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 ````swift
 func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellID",
-                                                            for: indexPath) as? MenuCollectionViewCell else {
-           return MenuCollectionViewCell()
-        }
-
         let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
-            self.showAlert(description: "Are you sure, you want to delete ?")
+                  // Menu Item click Handler
         }
         let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
-            self.showAlert(description: "Are you sure, you want to submit ?")
+                  // Menu Item click Handler
         }
         let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
-            self.showAlert(description: "Are you sure, you want to save ?")
+                  // Menu Item click Handler
         }
         let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
-            self.showAlert(description: "Are you sure, you want to edit ?")
+                  // Menu Item click Handler
         }
 
         let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
         menu.delegate = self
-        menu.tag = -1
-        cell.moreButton.tag = indexPath.row
-        cell.titleLabel.text = "Test Menu Cell"
-        cell.moreButton.addTarget(self, action: #selector(moreBtnPressed(sender:)), for: .touchUpInside)
         return cell
     }
 ````
@@ -217,33 +236,6 @@ func menuView(_ menuview: MenuView, showMenuIconForRowAtIndexPath indexPath: Ind
 func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPath: IndexPath) -> Direction {
      return .top
 }
-````
-### Menu Items:
-
-we can customize each menu item with the below mentioned functions.
-
-````swift
-let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
-}
-firstItem.itemBorderColor = UIColor.white
-firstItem.itemBorderWidth = 2.0
-firstItem.itemIconSize = CGSize(width: 50, height: 30)
-firstItem.titleColor = UIColor.gray
-firstItem.titleFont = UIFont.systemFont(ofSize: 11.0)
-firstItem.backgroundColor = UIColor.blue
-````
-
-### Menu View
-
-we can customize menu View with the below mentioned functions.
-
-````swift
-let menu = MenuView(mCell: cell, items: [], indexPath: indexPath)
-menu.setMenuContentAlignment(.center)
-menu.setBgColor(UIColor(red: 90.0/255.0, green: 200.0/255.0, blue: 250.0/255.0, alpha: 1.0))
-menu.setMenuItemSpacingVertical(5.0)
-menu.setMenuItemSpacingHorizontal(15.0)
-menu.setMenuContentInset(10, left: 10, bottom: 10, right: -10)
 ````
 
 ## Author
