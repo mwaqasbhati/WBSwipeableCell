@@ -1,7 +1,7 @@
 # WBSwipeableCell
 
 
-* SwipeableMenu works well for both UITableViewCell and UICollectionViewCell, implemented in Swift.*
+SwipeableMenu works well for both UITableViewCell and UICollectionViewCell, implemented in Swift.*
 
 
 ## About
@@ -17,7 +17,7 @@ A swipeable Menu has below mentioned features:
 
 ## Background
 
-I have used many menus for a tableviewcell and collectionviewcell but WBSwipeableCell could be used if our menu goes bigger in menu items.
+I have used many menus for a tableviewcell and collectionviewcell but WBSwipeableCell is used where we have lengthy number of menu items and needs to display in on view.
 
 ## Demo
 
@@ -144,9 +144,11 @@ use_frameworks!
 # Latest release in CocoaPods
 pod 'WBSwipeableCell'
 
+````
+
 ## Usage
 
-You need to add below mentioned code in 'cellForRowAt' like below
+You need to add below mentioned code in `cellForRowAt` for #UITableView# and `cellForItemAt` for #UICollectionView#
 
 ````swift
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -169,6 +171,37 @@ func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> U
 }
 ````
 
+````swift
+func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellID",
+                                                            for: indexPath) as? MenuCollectionViewCell else {
+           return MenuCollectionViewCell()
+        }
+
+        let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
+            self.showAlert(description: "Are you sure, you want to delete ?")
+        }
+        let secondItem = MenuItem(title: "Submit", icon: "save"){ (item) in
+            self.showAlert(description: "Are you sure, you want to submit ?")
+        }
+        let thirdItem = MenuItem(title: "Save", icon: "submit"){ (item) in
+            self.showAlert(description: "Are you sure, you want to save ?")
+        }
+        let fourthItem = MenuItem(title: "Edit", icon: "edit"){ (item) in
+            self.showAlert(description: "Are you sure, you want to edit ?")
+        }
+
+        let menu = MenuView(mCell: cell, items: [firstItem, secondItem, thirdItem, fourthItem], indexPath: indexPath)
+        menu.delegate = self
+        menu.tag = -1
+        cell.moreButton.tag = indexPath.row
+        cell.titleLabel.text = "Test Menu Cell"
+        cell.moreButton.addTarget(self, action: #selector(moreBtnPressed(sender:)), for: .touchUpInside)
+        return cell
+    }
+````
+
 Adopt the `MenuViewDelegate` protocol:
 
 ````swift
@@ -185,7 +218,33 @@ func menuView(_ menuview: MenuView, positionOfMenuIconForRowAtIndexPath indexPat
      return .top
 }
 ````
+### Menu Items:
 
+we can customize each menu item with the below mentioned functions.
+
+````swift
+let firstItem = MenuItem(title: "Delete", icon: "delete") { (item) in
+}
+firstItem.itemBorderColor = UIColor.white
+firstItem.itemBorderWidth = 2.0
+firstItem.itemIconSize = CGSize(width: 50, height: 30)
+firstItem.titleColor = UIColor.gray
+firstItem.titleFont = UIFont.systemFont(ofSize: 11.0)
+firstItem.backgroundColor = UIColor.blue
+````
+
+### Menu View
+
+we can customize menu View with the below mentioned functions.
+
+````swift
+let menu = MenuView(mCell: cell, items: [], indexPath: indexPath)
+menu.setMenuContentAlignment(.center)
+menu.setBgColor(UIColor(red: 90.0/255.0, green: 200.0/255.0, blue: 250.0/255.0, alpha: 1.0))
+menu.setMenuItemSpacingVertical(5.0)
+menu.setMenuItemSpacingHorizontal(15.0)
+menu.setMenuContentInset(10, left: 10, bottom: 10, right: -10)
+````
 
 ## Author
 
