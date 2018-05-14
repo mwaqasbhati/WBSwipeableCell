@@ -17,7 +17,7 @@ A swipeable Menu has below mentioned features:
 
 ## Background
 
-I have used many menus for a tableviewcell and collectionviewcell but WBSwipeableCell is used where we have lengthy number of menu items and needs to display in on view.
+I have used many menus for a tableviewcell and collectionviewcell but WBSwipeableCell is used where we have lengthy number of menu items and needs to display in one view.
 
 ## Demo
 
@@ -176,7 +176,7 @@ pod 'WBSwipeableCell'
 
 ## Usage
 
-You need to add below mentioned code in `cellForRowAt` for UITableView and `cellForItemAt` for UICollectionView
+You need to add below mentioned code in `cellForRowAt` for UITableView or `cellForItemAt` for UICollectionView
 
 ````swift
 func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -220,6 +220,8 @@ func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath:
         return cell
     }
 ````
+
+### MenuViewDelegate
 
 Adopt the `MenuViewDelegate` protocol:
 
