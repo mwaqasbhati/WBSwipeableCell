@@ -11,21 +11,21 @@ import WBSwipeableCell
 
 class TableViewController: UIViewController {
 
-    //MARK: Instance Variables
+    //MARK:- Instance Variables
     
     @IBOutlet weak var tableView: UITableView!
     private var items: [MenuView]?
     private var menuLayout: MenuLayout?
     private var menuDirection: Direction?
 
-    //MARK: View Controller Life cycle
+    //MARK:- View Controller Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = 190.0
     }
     
-    //MARK: Actions
+    //MARK:- Actions
     @objc func moreBtnPressed(sender: UIButton) {
         
         for (_, cell) in tableView.visibleCells.enumerated() {
@@ -120,7 +120,7 @@ extension TableViewController: UITableViewDataSource {
     }
 }
 
-//MARK: MenuViewDelegate
+//MARK:- MenuViewDelegate
 
 extension TableViewController: MenuViewDelegate {
     func menuView(_ view: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {

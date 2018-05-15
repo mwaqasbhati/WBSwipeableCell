@@ -8,7 +8,7 @@
 
 import UIKit
 
-//MARK: Menu Item
+//MARK:-- Menu Item
 
 /**
  ## Feature Support
@@ -42,13 +42,13 @@ import UIKit
 
 open class MenuItem: UIView {
     
-    //MARK: Instance Variables
+    //MARK:-- Instance Variables
     
     private var titleLabel = UILabel(frame: .zero)
     private var titleImageView = UIImageView(frame: .zero)
     private var actionButton = UIButton.init(type: .custom)
     private var stackView = UIStackView(frame: .zero)
-    private var action:actionHandler?
+    private var action: ActionHandler?
     public  var itemIconSize: CGSize = CGSize(width: 50.0, height: 60.0)
     
     public var titleColor: UIColor? {
@@ -77,7 +77,7 @@ open class MenuItem: UIView {
         }
     }
     
-    //MARK: Initializers
+    //MARK:-- Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -89,7 +89,7 @@ open class MenuItem: UIView {
      - parameter icon: image name of the image view
      - parameter actionHandler: this will be block which will be called when we will click on menu Item
      */
-    public convenience init(title: String, icon: String, actionHandler: @escaping actionHandler) {
+    public convenience init(title: String, icon: String, actionHandler: @escaping ActionHandler) {
         self.init(frame: CGRect.zero)
         titleLabel.text = title
         titleImageView.image = UIImage(named: icon)
@@ -101,7 +101,7 @@ open class MenuItem: UIView {
         fatalError("Init(:coder) is not been implemented")
     }
     
-    //MARK: Helper Methods
+    //MARK:-- Helper Methods
     
     /**
      This method used to setup Menu Item in the Menu View.
@@ -146,7 +146,7 @@ open class MenuItem: UIView {
         
     }
     
-    //MARK: Action Methods
+    //MARK:-- Action Methods
     
     @objc func actionBtnPressed(sender: UIButton) {
         guard let mAction = self.action else {

@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-public typealias actionHandler = (MenuItem)->()
+public typealias ActionHandler = (MenuItem)->()
 
-//MARK: Enums
+//MARK:-- Enums
 public enum ContentAlignment {
     case left, right, center, top, bottom
 }
@@ -25,7 +25,7 @@ public enum MenuLayout: Int {
     case horizontal = 0, vertical, square
 }
 
-//MARK: Menu View
+//MARK:-- Menu View
 
 /**
  ## Feature Support
@@ -56,7 +56,7 @@ public enum MenuLayout: Int {
 
 open class MenuView: UIView {
     
-    //MARK: Instance Variables
+    //MARK:-- Instance Variables
     
     private var items: [MenuItem]?
     fileprivate var stackView = UIStackView(frame: .zero)
@@ -146,7 +146,7 @@ open class MenuView: UIView {
         return swipeRight
     }()
     
-    //MARK: Initializers
+    //MARK:-- Initializers
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -173,7 +173,7 @@ open class MenuView: UIView {
         fatalError("Init(:coder) is not been implemented")
     }
     
-    //MARK: Helper Methods
+    //MARK:-- Helper Methods
     
     /**
      This method used to open Menu View.
@@ -276,20 +276,19 @@ open class MenuView: UIView {
      
      */
     private func setupMenuIconPosition() {
-        if let show = delegate?.menuView(self, showMenuIconForRowAtIndexPath: indexPath) {
-            if show == true {
-                if let position = delegate?.menuView(self, positionOfMenuIconForRowAtIndexPath: indexPath) {
-                    switch position {
-                    case .left:
-                        showLeftMenuIcon()
-                    case .right:
-                        showRightMenuIcon()
-                    case .top:
-                        showTopMenuIcon()
-                    case .bottom:
-                        showBottomMenuIcon()
-                    }
-                }
+        guard let show = delegate?.menuView(self, showMenuIconForRowAtIndexPath: indexPath), let position = delegate?.menuView(self, positionOfMenuIconForRowAtIndexPath: indexPath) else {
+            return
+        }
+        if show == true {
+            switch position {
+            case .left:
+                showLeftMenuIcon()
+            case .right:
+                showRightMenuIcon()
+            case .top:
+                showTopMenuIcon()
+            case .bottom:
+                showBottomMenuIcon()
             }
         }
     }
@@ -446,7 +445,7 @@ open class MenuView: UIView {
         }
     }
     
-    //MARK: Action Methods
+    //MARK:-- Action Methods
     
     @objc func menuBtnPressed(sender: UIButton) {
         if _menuOpen {
@@ -456,7 +455,7 @@ open class MenuView: UIView {
         }
     }
     
-    //MARK: Gesture Handling Methods
+    //MARK:-- Gesture Handling Methods
     
     /**
      This method used to handle swipe gesture
@@ -503,7 +502,7 @@ open class MenuView: UIView {
     }
 }
 
-//MARK: Alignment and Spacing Methods
+//MARK:-- Alignment and Spacing Methods
 
 public extension MenuView {
     /**
@@ -623,7 +622,7 @@ public extension MenuView {
     }
 }
 
-//MARK: Gesture Recgonizer Delegate
+//MARK:-- Gesture Recgonizer Delegate
 
 extension MenuView: UIGestureRecognizerDelegate {
     open func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

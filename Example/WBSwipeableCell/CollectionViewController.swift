@@ -11,21 +11,21 @@ import WBSwipeableCell
 
 class CollectionViewController: UIViewController {
 
-    //MARK: Instance Variables
+    //MARK:- Instance Variables
 
     @IBOutlet weak var collectionView: UICollectionView!
     private var items: [MenuView]?
     private var menuLayout: MenuLayout?
     private var menuDirection: Direction?
     
-    //MARK: View Controller Life cycle
+    //MARK:- View Controller Life cycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
     }
 
-    //MARK: Actions
+    //MARK:- Actions
     @objc func moreBtnPressed(sender: UIButton) {
         
         for (_, cell) in collectionView.visibleCells.enumerated() {
@@ -134,7 +134,7 @@ extension CollectionViewController: UICollectionViewDataSource {
     
 }
 
-//MARK: MenuViewDelegate
+//MARK:- MenuViewDelegate
 
 extension CollectionViewController: MenuViewDelegate {
     func menuView(_ view: MenuView, directionForRowAtIndexPath indexPath: IndexPath) -> Direction {
